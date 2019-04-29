@@ -1,6 +1,7 @@
 import math
 import numpy as np
 from scipy.fftpack import fft,ifft
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import platform
 
@@ -9,25 +10,11 @@ if platform.system() == 'Darwin':
 else:
     dataPath = r'F:\大学工作\2018-2019 Sophomore year\190429第二次校赛建模\data'
 
-N = 30
-
-# read data, the type of data is numpy.ndarray
-data = np.zeros((30, 4))
-def readData(s):
-    return np.array([float(f) for f in s.split()])
-currentLine = ''
-with open(dataPath, 'r') as f:
-    for i in range(30):
-        currentLine = f.readline()
-        data[i] = readData(currentLine)
+data = np.loadtxt(dataPath)
 time = data[..., 0]
-# read data end
-
-
-
 
 # extract data1 and compute vMean1 from data, 1 means the first driver
-data1 = np.array([x[1] for x in data])
+data1 = data[...,1]
 accumulate1 = np.zeros(30)
 s = 0
 for i in range(30):
@@ -36,9 +23,13 @@ for i in range(30):
 vMean1 = accumulate1 / time
 # extract data1 end
 
+t = np.linspace(0, 1, 30)
+print(t)
+
+f = interp1d(t, data1, kind='cubic')
 
 # fft
-vfft = fft(vMean1)
+vfft = fft(vInter)
 vMod = abs(vfft)
 vMod /= (N/2)
 vMod[0] /= 2
@@ -54,7 +45,8 @@ def result(t, threshold = 0):
         s += vMod[i]*math.cos(2*i*math.pi*t+vPositiveArg[i])
     return s
 
-
+plot1 = 0
+plot2 = 0
 plot1 = 1
 plot2 = 1
 if plot1:
