@@ -11,21 +11,17 @@ else:
 
 N = 30
 
-# init data, the type of data is numpy.ndarray
+# read data, the type of data is numpy.ndarray
 data = np.zeros((30, 4))
 def readData(s):
     return np.array([float(f) for f in s.split()])
 currentLine = ''
 with open(dataPath, 'r') as f:
-    currentLine = f.readline()
-    i = 0
-    while (currentLine):
-        if currentLine[0].isdigit():
-            data[i] = readData(currentLine)
-            i += 1
+    for i in range(30):
         currentLine = f.readline()
+        data[i] = readData(currentLine)
 time = data[..., 0]
-# init data end
+# read data end
 
 
 
@@ -38,7 +34,7 @@ for i in range(30):
     s += data1[i]
     accumulate1[i] = s
 vMean1 = accumulate1 / time
-# init data1 end
+# extract data1 end
 
 
 # fft
