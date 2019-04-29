@@ -23,7 +23,7 @@ for i in range(30):
 vMean1 = accumulate1 / time
 # extract data1 end
 
-vMean1 = np.concatenate((vMean1[0:1], vMean1))
+vMean1 = np.concatenate((vMean1[-1:], vMean1))
 f = interp1d(np.linspace(0, 1, 31), vMean1, kind='cubic')
 vInter = [f(t) for t in np.linspace(0, 1, 121)] # len(vInter) == 30k+1, where k is an integer
 
