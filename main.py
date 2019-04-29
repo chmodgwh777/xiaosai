@@ -3,12 +3,13 @@ import numpy as np
 from scipy.fftpack import fft,ifft
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
 import platform
 
 if platform.system() == 'Darwin':
     dataPath = '/Users/gao/Desktop/xiaosai/data'
 else:
-    dataPath = r'F:\大学工作\2018-2019 Sophomore year\190429第二次校赛建模\data'
+    dataPath = r'F:\大学工作\2018-2019 Sophomore year\190429第二次校赛建模\data.txt'
 
 data = np.loadtxt(dataPath)
 time = data[..., 0]
