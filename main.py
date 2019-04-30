@@ -25,24 +25,26 @@ vMean1 = accumulate1 / time
 
 vMean1 = np.concatenate((vMean1[-1:], vMean1))
 f = interp1d(np.linspace(0, 1, 31), vMean1, kind='cubic')
-vInter = [f(t) for t in np.linspace(0, 1, 121)] # len(vInter) == 30k+1, where k is an integer
+vInter = [f(t) for t in np.linspace(0, 1, 31)] # len(vInter) == 30k+1, where k is an integer
 
 # fft
-N = len(vInter)
-vfft = fft(vInter)
+N = len(vInter) - 1
+vfft = fft(vInter, N)
 vMod = abs(vfft)
 vMod /= (N/2)
 vMod[0] /= 2
-varg = [math.atan(v.imag/v.real) for v in vfft]
-vPositiveArg = [arg for arg in varg if arg <= 0.0][0:-1]
+varg = [math.atan(v.imag/v.real) for v in vfft][0:15]
+# vPositiveArg = [arg for arg in varg if arg <= 0.0][0:-1]
+print(len(varg))
 
+print(vMod)
 # this function is the result , defined of (0, 1)
 def result(t, threshold = 0):
-    s = 0.0
-    for i in range(len(vPositiveArg)):
+    s = vMod[0]
+    for i in range(1, len(varg)):
         if vMod[i] <= threshold:
             continue
-        s += vMod[i]*math.cos(2*i*math.pi*t+vPositiveArg[i])
+        s += vMod[i]*math.cos(2*i*math.pi*t+varg[i])
     return s
 
 plot1 = 0
