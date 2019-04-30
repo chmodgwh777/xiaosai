@@ -13,8 +13,9 @@ else:
 data = np.loadtxt(dataPath)
 time = data[..., 0]
 
-# extract data1 and compute vMean1 from data, 1 means the first driver
-data1 = data[...,1]
+# extract data1 and compute vMean1 from data, 1 means the one of a driver
+driver = 1
+data1 = data[...,driver]
 accumulate1 = np.zeros(30)
 s = 0
 for i in range(30):
@@ -54,7 +55,7 @@ def printrRsult(t, threshold = 0):
         # s += vMod[i]*math.cos(2*i*math.pi*t+varg[i])
         print("%fCos(%dPit%+f)" % (vMod[i], 2*i, varg[i]), end='+')
     return s
-printrRsult(0, 0)
+# printrRsult(0, 0)
 
 plot1 = 0
 plot2 = 0
@@ -69,5 +70,6 @@ if plot2:
     th2 = 0.1
     plt.plot(t2, [result(ti, th1) for ti in t2], 'b', label='threshold=%f'%th1)
     plt.plot(t2, [result(ti, th2) for ti in t2], 'g', label='threshold=%f'%th2)
+plt.title('Driver %d' % (driver))
 plt.legend()
 plt.show()
