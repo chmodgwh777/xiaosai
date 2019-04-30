@@ -25,7 +25,7 @@ vMean1 = accumulate1 / time
 
 vMean1 = np.concatenate((vMean1[-1:], vMean1))
 f = interp1d(np.linspace(0, 1, 31), vMean1, kind='cubic')
-vInter = [f(t) for t in np.linspace(0, 1, 31)] # len(vInter) == 30k+1, where k is an integer
+vInter = [f(t) for t in np.linspace(0, 1, 121)] # len(vInter) == 30k+1, where k is an integer
 
 # fft
 N = len(vInter) - 1
@@ -33,11 +33,9 @@ vfft = fft(vInter, N)
 vMod = abs(vfft)
 vMod /= (N/2)
 vMod[0] /= 2
-varg = [math.atan(v.imag/v.real) for v in vfft][0:15]
+varg = [math.atan2(v.imag, v.real) for v in vfft][0:int(N/2)]
 # vPositiveArg = [arg for arg in varg if arg <= 0.0][0:-1]
-print(len(varg))
 
-print(vMod)
 # this function is the result , defined of (0, 1)
 def result(t, threshold = 0):
     s = vMod[0]
@@ -46,6 +44,17 @@ def result(t, threshold = 0):
             continue
         s += vMod[i]*math.cos(2*i*math.pi*t+varg[i])
     return s
+
+def printrRsult(t, threshold = 0):
+    s = vMod[0]
+    print(vMod[0], end='+')
+    for i in range(1, len(varg)):
+        if vMod[i] <= threshold:
+            continue
+        # s += vMod[i]*math.cos(2*i*math.pi*t+varg[i])
+        print("%fCos(%dPit%+f)" % (vMod[i], 2*i, varg[i]), end='+')
+    return s
+printrRsult(0, 0)
 
 plot1 = 0
 plot2 = 0
@@ -57,7 +66,7 @@ if plot1:
 if plot2:
     t2 = np.linspace(0, 1, 1000)
     th1 = 0
-    th2 = 1.04
+    th2 = 0.1
     plt.plot(t2, [result(ti, th1) for ti in t2], 'b', label='threshold=%f'%th1)
     plt.plot(t2, [result(ti, th2) for ti in t2], 'g', label='threshold=%f'%th2)
 plt.legend()
