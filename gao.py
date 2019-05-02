@@ -15,7 +15,8 @@ class draw:
         self.pointList = np.linspace(self.xmin, self.xmax, pointNum)
         self.valueList = np.array([fun(x) for x in self.pointList])
         self.color = color
-    def show(self):
+    def show(self, c = 'b'):
+        self.color = c
         plt.plot(self.pointList, self.valueList, self.color)
 
 def getFFTfun(xlist, tmin, tmax, threshold = 0):
