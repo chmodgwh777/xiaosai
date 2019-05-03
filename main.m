@@ -1,54 +1,37 @@
-function main()
-    filename = '/Users/gao/Desktop/xiaosai/data';
-    data = importdata(filename)';
-    time = data(1, :);
-    data1 = data(2, :);
-    accumulate1 = zeros(1, 30);
-    s = 0;
-    for i = 1:30
-        s = s + data1(i);
-        accumulate1(i) = s;
-    end
-    vMean1 = accumulate1 ./ time;
-    vMean1 = [vMean1(length(vMean1)), vMean1];
+N = 1000;
+ddriver = 1;
+data = importdata('data');
+time = data(:, 1) - 0.25;
+data1 = data(:, ddriver+1);
+vlist = data1 .* 2;
+vlist = vlist';
+vtime = linspace(0, 15, 61);
+interMethod = 'spline';
+vInter = interp1(time, vlist, vtime, interMethod, 'extrap');
 
-    % not interpolate yet
-    vInter = vMean1;
+f = getFFTfun(vInter, 0, 15, 0.0);
+x = linspace(0, 15, N);
+y = arrayfun(f, x);
 
-    N = length(vInter) - 1;
-    vfft = fft(vInter, N);
-    vMod = abs(vfft);
-    vMod = vMod / (N/2);
-    vMod(1) = vMod(1) / 2;
-    varg = zeros(1, floor(N/2));
-    for i = 1:length(varg)
-        varg(i) = atan2(imag(vfft(i)), real(vfft(i)));
-    end
+figure
+s(1) = subplot(221);
+plot(time, vlist, 'r.', x, y, 'b', 0:15, ones(1,16)*100, 'g');
 
-    function s = result(t, threshold)
-        s = vMod(1);
-        for i = 2:length(varg)
-            if vMod(i) <= threshold
-                continue
-            end
-            s = s + vMod(i)*cos(2*(i-1)*pi*t+varg(i));
-        end
-    end
+s(2) = subplot(222);
+I = arrayfun(@(v)quad(f, v-0.5, v), data(:, 1));
+plot(data(:, 1), data1, 'r.');
+hold on;
+plot(data(:, 1), I, 'g.');
 
-    pointNum = 1000;
-    t2 = linspace(0, 1, pointNum);
+s(3) = subplot(223);
+plot(data(:, 1), I-data1, 'b.');
 
-    result1 = zeros(1, pointNum);
-    for k = 1:length(result1)
-        result1(k) = result(t2(k), 0);
-    end
+s(4) = subplot(224);
+plot(time, vlist, 'r+');
+hold on;
+plot(vtime, vInter, 'b.');
 
-    result2 = zeros(1, pointNum);
-    for k = 1:length(result1)
-        result2(k) = result(t2(k), 0.1);
-    end
-
-    plot(linspace(0, 1, 31), vMean1, t2, result1, t2, result2);
-
-end
-
+title(s(1), sprintf('result of driver%d', ddriver), 'FontSize', 15);
+title(s(2), 'compare the integrate value', 'FontSize', 15);
+title(s(3), 'Error of the integrate', 'FontSize', 15);
+title(s(4), sprintf('result of interpolate, method:%s', interMethod), 'FontSize', 15);

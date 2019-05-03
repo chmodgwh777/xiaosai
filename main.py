@@ -25,7 +25,7 @@ vInter = [F(t) for t in tInter]
 
 # 第一幅图
 N = 1000
-tPoint = np.linspace(0, 15, 1000)
+tPoint = np.linspace(0, 15, N)
 plt.subplot(221)
 plt.title('Result of Driver%d' % (driver))
 plt.plot(range(0, 16), [100 for i in range(0, 16)])
