@@ -127,51 +127,52 @@
         题目要求给出大巴车的速度函数。为将问题简化，首先将题目中的原始数据进行预处理。将相邻半小时内大巴车行驶的平均速度近似为大巴车在中间时刻的平均速度，这样，我们得到$t=0.25, 0.75, 1.25,\dots, 14.75h$共$30$个时刻大巴车的瞬时速度，如图1所示：
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \includegraphics[width=1\linewidth]{rawdata.png}
             \caption{瞬时速度}
         \end{figure}
             
         为方便后续的数据处理，采用三次样条插值的方法，对速度函数$v(t)$进行插值，得到插值后$t=0, 0.5, 1,\dots, 30h$时刻的瞬时速度值。这样我们得到一系列等时间间隔的瞬时速度的数据点，如图2所示：
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \includegraphics[width=1\linewidth]{interpolate.png}
             \caption{三次样条插值后的数据点}
         \end{figure}
         
         \subsection{基于FFT的速度求解}
-        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如图3所示：
+        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号$v^*(t)$进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如图3所示：
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \includegraphics[width=1\linewidth]{mod.png}
             \caption{幅度特性$A_n$}
         \end{figure}
 
-        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{A_n}{\frac{N}{2}}$，且其相位为$\arctan\frac{b_n}{a_n}$。
-        % 故我们得到： 
-        % \begin{equation*}
-        %     v^*(t)=XXX
-        % \end{equation*}
-        最终得到的速度函数可以写成如下形式：
+        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{2A_n}{N}$，且其相位为$\mathrm{atan2}(b_n,a_n)$。
+
+        故我们得到： 
         \begin{equation*}
             v^*(t)=XXX
         \end{equation*}
+
+        最终得到的速度函数可以写成如下形式：
+        \begin{equation*}
+            v(t)=XXX
+        \end{equation*}
         其图像大致如图4所示：
-        \begin{figure}
-            \begin{minipage}{0.4\linewidth}
+        \begin{figure}[htbp]
             \centering
-            \includegraphics[width=1\textwidth]{test.jpg}
+
+            \includegraphics[width=1\linewidth]{v.png}
             \caption{速度函数}
-            \end{minipage} 
-            \hfill
-            \begin{minipage}{0.4\linewidth}
-            \centering
-            \includegraphics[width=1\textwidth]{test.jpg}
-            \caption{模拟值与实际值的比较}
-            \end{minipage}
-        \end{figure}  
+        \end{figure}
 
         \subsection{模型的检验}
             现在，对所求出的速度函数与原始数据的吻合度进行检验。分别对相邻半小时下的速度函数进行积分，求出相邻时间里大巴车行驶路程的模拟值，并与实际值加以比较。具体数值如图5所示：
+            \begin{figure}[htbp]
+                \centering
+    
+                \includegraphics[width=1\linewidth]{compare.png}
+                \caption{模拟值与实际值的比较}
+            \end{figure}
 
             经计算，XXXXXXXXXXXXXXXXXXX  //误差分析// 
         
@@ -182,7 +183,7 @@
         \begin{figure}[htbp]
             \centering
 
-            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \includegraphics[width=1\linewidth]{v100.png}
             \caption{速度函数与限速}
         \end{figure}
 
