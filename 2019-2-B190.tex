@@ -13,7 +13,7 @@
     \maketitle
     \begin{abstract}
     //摘要//
-    \keywords{lweif}
+    \keywords{//关键字//}
     \end{abstract}
     \section{问题的背景与重述}
         \subsection{引言}
@@ -84,62 +84,68 @@
         \end{enumerate}
     \section{模型的求解}
         \subsection{数据的预处理}
-        题目要求给出大巴车的速度函数。为将问题简化，首先将题目中的原始数据进行预处理。将相邻半小时内大巴车行驶的平均速度近似为大巴车在中间时刻的平均速度，这样，我们得到$t=0.25, 0.75, 1.25,\dots, 14.75h$共$30$个时刻大巴车的瞬时速度，如下图所示：
-
-        \begin{figure}[ht]
+        题目要求给出大巴车的速度函数。为将问题简化，首先将题目中的原始数据进行预处理。将相邻半小时内大巴车行驶的平均速度近似为大巴车在中间时刻的平均速度，这样，我们得到$t=0.25, 0.75, 1.25,\dots, 14.75h$共$30$个时刻大巴车的瞬时速度，如图1所示：
+        \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.8\linewidth]{test.png}
-            \caption{label}
+            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \caption{瞬时速度}
         \end{figure}
             
-        为方便后续的数据处理，采用三次样条插值的方法，对速度函数$v(t)$进行插值，得到插值后$t=0, 0.5, 1,\dots, 30h$时刻的瞬时速度值。这样我们得到一系列等时间间隔的瞬时速度的数据点，如下图所示：
-
-        \begin{figure}[ht]
+        为方便后续的数据处理，采用三次样条插值的方法，对速度函数$v(t)$进行插值，得到插值后$t=0, 0.5, 1,\dots, 30h$时刻的瞬时速度值。这样我们得到一系列等时间间隔的瞬时速度的数据点，如图2所示：
+        \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.8\linewidth]{test.png}
-            \caption{label}
+            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \caption{三次样条插值后的数据点}
         \end{figure}
         
         \subsection{基于FFT的速度求解}
-        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如下图所示：
-        \begin{figure}[ht]
+        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如图3所示：
+        \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.8\linewidth]{test.png}
-            \caption{label}
+            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \caption{幅度特性$A_n$}
         \end{figure}
-        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{A_n}{\frac{N}{2}}$，且其相位为$\arctan\frac{b_n}{a_n}$。故我们得到： 
-        \begin{equation*}
-            v^*(t)=XXX
-        \end{equation*}
+
+        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{A_n}{\frac{N}{2}}$，且其相位为$\arctan\frac{b_n}{a_n}$。
+        % 故我们得到： 
+        % \begin{equation*}
+        %     v^*(t)=XXX
+        % \end{equation*}
         最终得到的速度函数可以写成如下形式：
         \begin{equation*}
             v^*(t)=XXX
         \end{equation*}
-        其图像大致如下：
-        \begin{figure}[ht]
+        其图像大致如图4所示：
+        \begin{figure}
+            \begin{minipage}{0.4\linewidth}
             \centering
-            \includegraphics[width=0.8\linewidth]{test.png}
-            \caption{label}
-        \end{figure}
-        
+            \includegraphics[width=1\textwidth]{test.jpg}
+            \caption{速度函数}
+            \end{minipage} 
+            \hfill
+            \begin{minipage}{0.4\linewidth}
+            \centering
+            \includegraphics[width=1\textwidth]{test.jpg}
+            \caption{模拟值与实际值的比较}
+            \end{minipage}
+        \end{figure}  
 
         \subsection{模型的检验}
-            现在，对所求出的速度函数与原始数据的吻合度进行检验。分别对相邻半小时下的速度函数进行积分，求出相邻时间里大巴车行驶路程的模拟值，并与实际值加以比较。      \begin{figure}[ht]
-                \centering
-                \includegraphics[width=0.8\linewidth]{test.png}
-                \caption{label}
-            \end{figure}
+            现在，对所求出的速度函数与原始数据的吻合度进行检验。分别对相邻半小时下的速度函数进行积分，求出相邻时间里大巴车行驶路程的模拟值，并与实际值加以比较。具体数值如图5所示：
+
             经计算，XXXXXXXXXXXXXXXXXXX  //误差分析// 
         
             因此，本文建立的模型是有效可靠的。
         
         \subsection{超速行为的判定}
         将问题一中求得的速度函数与高速公路的限速画入同一张图像中:
-        \begin{figure}[ht]
+        \begin{figure}[htbp]
             \centering
-            \includegraphics[width=0.8\linewidth]{test.png}
-            \caption{label}
+
+            \includegraphics[width=0.5\linewidth]{test.jpg}
+            \caption{速度函数与限速}
         \end{figure}
+
         可清晰地看出甲、乙、丙三位司机均存在超速的行为。更进一步地，可以求解得出三位司机超速的时间分别为$0.99$小时、$4.455$小时与$2.55$小时。
 
         \subsection{司机驾驶水平的评价}
@@ -150,13 +156,22 @@
 
         由此，我们得到三位司机驾驶个各项指标如下表：
         
-        \begin{center}
-            \begin{tabular}{cc}
+        \begin{table}[htbp]
+            \centering
+            \caption{驾驶指标}
+                \begin{tabular}{|c|c|c|c|}
                 \hline
-                符号	&  意义 \\ \hline
-                $F$    & 球受到力的大小 \\ \hline
-            \end{tabular}
-        \end{center}
+                & 平均速度 & 变异系数 & 超速时间 \\
+                \hline
+                甲     & 90.77352 & 0.08558 & 0.99 \\
+                \hline
+                乙     & 92.03653 & 0.11248 & 4.455 \\
+                \hline
+                丙     & 92.6628 & 0.110428 & 2.25 \\
+                \hline
+                \end{tabular}
+            \label{tab:seven}
+          \end{table}
 
         接下来，对数据进行标准化处理。考虑到大巴车的平均速度应尽可能地快，而变异系数以及超速时间应越小越好，故对两种情况分别采用两种标准化的方法，使得标准化系数均在$[0,1]$之间，且越接近$1$代表司机的该项指标越为优秀。
 
@@ -179,24 +194,37 @@
             经计算，该矩阵的特征向量为$(0.39521,1,4.21716)^T$，经过归一化得到三项指标的主观权重分别为$0.070$、$0.178$和$0.751$。
             一致性检验显示，该矩阵唯一的实特征值为$3.029$，故$CI=\frac{\lambda-n}{n-1}=0.015$。经查表得当$n=3$时$RI=0.58$，故$CR=\frac{CI}{RI}=0.025<0.1$，即该矩阵通过了一致性检验。
             综上，得到了三个指标的客观权重与主观权重，取其平均值即得最终的组合权重$R$如下表所示。
-            \begin{center}
-                \begin{tabular}{cc}
+            \begin{table}[htbp]
+                \centering
+                \caption{组合权重$R$}
+                    \begin{tabular}{|c|c|c|c|}
                     \hline
-                    符号	&  意义 \\ \hline
-                    $F$    & 球受到力的大小 \\ \hline
-                \end{tabular}
-            \end{center}
-
-
+                    & 平均速度 & 变异系数 & 超速时间 \\
+                    \hline
+                    客观权重  & 0.25043 & 0.496178 & 0.253392 \\
+                    \hline
+                    主观权重  & 0.070418 & 0.178178 & 0.751405 \\
+                    \hline
+                    组合权重  & 0.160424 & 0.337178 & 0.502399 \\
+                    \hline
+                    \end{tabular}
+                \label{tab:eight}
+              \end{table}
             \subsubsection{基于模糊综合评价法的驾驶水平评价}
             在各项指标经过标准化处理后，所有的指标取值都在$[0,1]$上。依照此数据特性，本文建立的评语集为${\text{较差，一般，较好，很好，非常好}}$，其评价等级的划分标准如下表所示。
-            \begin{center}
-                \begin{tabular}{cc}
+            \begin{table}[htbp]
+                \centering
+                \caption{评价等级划分标准}
+                    \begin{tabular}{|c|c|c|c|c|c|}
                     \hline
-                    符号	&  意义 \\ \hline
-                    $F$    & 球受到力的大小 \\ \hline
-                \end{tabular}
-            \end{center}
+                    评价等级  & 较差    & 一般    & 较好    & 很好    & 非常好 \\
+                    \hline
+                    标准分值  & 0     & 0.25  & 0.5   & 0.75  & 1 \\
+                    \hline
+                    \end{tabular}
+                \label{tab:nine}
+            \end{table}
+            
             依照此划分标准，可以计算各司机各项指标对各评语的隶属度，进而构造出各司机的模糊评价矩阵。令$A_1$，$A_2$，$A_3$分别代表甲、乙、丙的评价矩阵，那么：
             \[
                 A_1 = 
@@ -223,21 +251,36 @@
                 \end{pmatrix}
             \]
             在已知权重向量$R$的基础上，利用模糊变换$B_i=R.A_i$，求出甲、乙、丙三位司机的模糊综合评价向量。再通过下述评分等级百分制赋分(如下表)，对三位司机的驾驶水平进行比较。
-            \begin{center}
-                \begin{tabular}{cc}
+            \begin{table}[htbp]
+                \centering
+                \caption{评价等级百分制赋分}
+                    \begin{tabular}{|c|c|c|c|c|c|}
                     \hline
-                    符号	&  意义 \\ \hline
-                    $F$    & 球受到力的大小 \\ \hline
-                \end{tabular}
-            \end{center}
+                    评价等级  & 较差    & 一般    & 较好    & 很好    & 非常好 \\
+                    \hline
+                    百分制赋分 & 60    & 70    & 80    & 90    & 100 \\
+                    \hline
+                    \end{tabular}
+                \label{tab:ten}
+            \end{table}
+            
             最终，我们得到甲、乙、丙三位司机的最终评分分别为$93.58$分、$64.29$分和$80.23$分。即甲司机的驾驶水平最好，其次是丙司机，最后是乙司机。
-            \begin{center}
-                \begin{tabular}{cc}
+            \begin{table}[htbp]
+                \centering
+                \caption{最终排名}
+                    \begin{tabular}{|c|c|c|c|c|c|c|c|}
                     \hline
-                    符号	&  意义 \\ \hline
-                    $F$    & 球受到力的大小 \\ \hline
-                \end{tabular}
-            \end{center}
+                            & \multicolumn{5}{c|}{综合评价向量}    & 得分    & 排名 \\
+                    \hline
+                    甲     & 0.160424 & 0     & 0     & 0     & 0.839577 & 93.5831 & 1 \\
+                    \hline
+                    乙     & 0.839577 & 0     & 0.052289 & 0.108135 & 0     & 64.2898 & 3 \\
+                    \hline
+                    丙     & 0.234294 & 0.102884 & 0.228362 & 0.274036 & 0.160424 & 80.2341 & 2 \\
+                    \hline
+                    \end{tabular}
+                \label{tab:eleven}
+            \end{table}
 
     \section{模型的评价与改进}
     \subsection{模型的评价}
