@@ -6,6 +6,19 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{graphicx}
+\lstset{
+    columns=fixed,       
+    numbers=left,                                        % 在左侧显示行号
+    frame=none,                                          % 不显示背景边框
+    basicstyle=\small,
+    backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+    keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+    numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+    commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+    stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+    showstringspaces=false,                              % 不显示字符串中的空格
+    language=matlab,                                        % 设置语言
+}
 
 \title{大巴车的速度估计问题}
 
@@ -52,7 +65,14 @@
             \begin{tabular}{cc}
                 \hline
                 符号	&  意义 \\ \hline
-                $F$    & 球受到力的大小 \\ \hline
+                $F_n$ & 第$n$个点代表的频率 \\ 
+                $a_n$ & 第$n$个复数的实部 \\ 
+                $b_n$ & 第$n$个复数的虚部 \\ 
+                $A_n$ & 第$n$个点的幅度特性 \\ 
+                $\widehat{A}_n$ & 第$n$个点的幅度 \\ 
+                $v^*(t)$ & $[0,1]$上的速度函数 \\ 
+                $v(t)$ & $[0,15]$上的速度函数 \\
+                \hline
             \end{tabular}
         \end{center}
     \section{模型的原理}
@@ -347,7 +367,67 @@
     \appendix
         \section{matlab源码}
         \begin{lstlisting}[language=matlab]
-            print("Hello world!")
+%%% main.m
+N = 1000;
+ddriver = 1;
+data = importdata('data');
+time = data(:, 1) - 0.25;
+data1 = data(:, ddriver+1);
+vlist = data1 .* 2;
+vlist = vlist';
+vtime = linspace(0, 15, 61);
+interMethod = 'spline';
+vInter = interp1(time, vlist, vtime, interMethod, 'extrap');
+
+f = getFFTfun(vInter, 0, 15, 0.0);
+x = linspace(0, 15, N);
+y = arrayfun(f, x);
+
+figure
+s(1) = subplot(221);
+plot(time, vlist, 'r.', x, y, 'b', 0:15, ones(1,16)*100, 'g');
+
+s(2) = subplot(222);
+I = arrayfun(@(v)quad(f, v-0.5, v), data(:, 1));
+plot(data(:, 1), data1, 'r.');
+hold on;
+plot(data(:, 1), I, 'g.');
+
+s(3) = subplot(223);
+plot(data(:, 1), I-data1, 'b.');
+
+s(4) = subplot(224);
+plot(time, vlist, 'r+');
+hold on;
+plot(vtime, vInter, 'b.');
+
+title(s(1), sprintf('result of driver%d', ddriver), 'FontSize', 15);
+title(s(2), 'compare the integrate value', 'FontSize', 15);
+title(s(3), 'Error of the integrate', 'FontSize', 15);
+title(s(4), sprintf('result of interpolate, method:%s', interMethod), 'FontSize', 15);
+
+
+%%% getFFTfun.m
+function fun = getFFTfun(xlist, tmin, tmax, threshold)
+    N = length(xlist) - 1;
+    xfft = fft(xlist, N);
+    xMod = abs(xfft);
+    xMod = xMod / (N/2);
+    xMod(1) = xMod(1) / 2;
+    xarg = arrayfun(@(x)atan2(imag(x), real(x)), xfft(1:floor(N/2)));
+    function xmean = ffun(t)
+        tStd = (t-tmin)/(tmax-tmin);
+        xmean = xMod(1);
+        for i = 2: length(xarg)
+            if xMod(i) <= threshold
+                continue;
+            end
+            xmean = xmean + xMod(i)*cos(2*(i-1)*pi*tStd+xarg(i));
+        end
+    end
+    fun = @ffun;
+end
+
         \end{lstlisting}
 
 \end{document} 
