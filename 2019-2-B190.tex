@@ -54,7 +54,6 @@
         \begin{equation*}
             1+1=2
         \end{equation*}
-        （公式）
         其中，XXXXXX
         在本文中，采用快速傅里叶变换(Fast Fourier Transform, FFT)算法进行计算。该算法利用了DFT中的奇偶性与虚实性极大地简化了计算，将DFT中$\mathcal{O}(N^2)$的计算量减小至FFT的$\mathcal{O}(NLog2N)$，使得计算机得运算时间大大缩短。
 
@@ -84,18 +83,77 @@
     \section{模型的求解}
         \subsection{数据的预处理}
         题目要求给出大巴车的速度函数。为将问题简化，首先将题目中的原始数据进行预处理。将相邻半小时内大巴车行驶的平均速度近似为大巴车在中间时刻的平均速度，这样，我们得到$t=0.25, 0.75, 1.25,\dots, 14.75h$共$30$个时刻大巴车的瞬时速度，如下图所示：
-        图1
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\linewidth]{test.png}
+            \caption{label}
+        \end{figure}
+            
         为方便后续的数据处理，采用三次样条插值的方法，对速度函数$v(t)$进行插值，得到插值后$t=0, 0.5, 1,\dots, 30h$时刻的瞬时速度值。这样我们得到一系列等时间间隔的瞬时速度的数据点，如下图所示：
-        图2
+
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\linewidth]{test.png}
+            \caption{label}
+        \end{figure}
         
         \subsection{基于FFT的速度求解}
-        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。
-    现已将信号以$Fs=60Hz$的采样频率进行采样，则采样点数$N=60$。
+        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如下图所示：
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\linewidth]{test.png}
+            \caption{label}
+        \end{figure}
+        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{A_n}{\frac{N}{2}}$，且其相位为$\arctan\frac{b_n}{a_n}$。故我们得到： 
+        \begin{equation*}
+            v^*(t)=XXX
+        \end{equation*}
+        最终得到的速度函数可以写成如下形式：
+        \begin{equation*}
+            v^*(t)=XXX
+        \end{equation*}
+        其图像大致如下：
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\linewidth]{test.png}
+            \caption{label}
+        \end{figure}
+        
 
         \subsection{模型的检验}
-        //检验对v积分与原始数据的差异//
+            现在，对所求出的速度函数与原始数据的吻合度进行检验。分别对相邻半小时下的速度函数进行积分，求出相邻时间里大巴车行驶路程的模拟值，并与实际值加以比较。      \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.8\linewidth]{test.png}
+                \caption{label}
+            \end{figure}
+            经计算，XXXXXXXXXXXXXXXXXXX  //误差分析// 
+        
+            因此，本文建立的模型是有效可靠的。
+        
         \subsection{超速行为的判定}
+        将问题一中求得的速度函数与高速公路的限速画入同一张图像中:
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\linewidth]{test.png}
+            \caption{label}
+        \end{figure}
+        可清晰地看出甲、乙、丙三位司机均存在超速的行为。更进一步地，可以求解得出三位司机超速的时间分别为$0.99$小时、$4.455$小时与$2.55$小时。
+
         \subsection{司机驾驶水平的评价}
+        考虑到大巴车出租公司运营中对车辆行驶快速、平稳和安全的实际需求，本文分别选取平均速度、每半小时行驶里程的样本变异系数和超速时间作为衡量三项要求的指标。其中，样本变异系数的计算公式为：
+        \begin{equation*}
+            1+1=2
+        \end{equation*}
+
+        由此，我们得到三位司机驾驶个各项指标如下表：
+        
+        \begin{tabular}{cc}
+            \hline
+            符号	&  意义 \\ \hline
+            $F$    & 球受到力的大小 \\ \hline
+        \end{tabular}
+
             \subsubsection{基于熵权法的客观权重确定}
             \subsubsection{基于层次分析法的主观权重确定}
             \subsubsection{基于模糊综合评价法的驾驶水平评价}
