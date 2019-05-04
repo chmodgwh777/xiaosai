@@ -139,21 +139,23 @@
         \end{figure}
         
         \subsection{基于FFT的速度求解}
-        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如图3所示：
+        经过对速度函数$v(t)$的采样，我们即可利用FFT重构出完整的速度函数。下文将$v(t)$假想为定义域为$[0,1]$的信号$v^*(t)$进行求解，最后只需对时间轴进行拉伸变换即可得到所求的函数。现已将信号以$F_s=60\mathrm{Hz}$的采样频率进行采样，采样点数$N=60$，故FFT所得结果的第$n$个点代表的频率为$F_n=\frac{(n-1)F_s}{N}$。在MATLAB中,利用FFT算法对该序列进行离散傅里叶变换（具体代码见附录），并对得到的$N$个复数$a_n+b_ni$取模，得到各频率值下的幅度特性$A_n$，如图3所示：
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.5\linewidth]{test.jpg}
             \caption{幅度特性$A_n$}
         \end{figure}
 
-        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{A_n}{\frac{N}{2}}$，且其相位为$\arctan\frac{b_n}{a_n}$。
-        % 故我们得到： 
-        % \begin{equation*}
-        %     v^*(t)=XXX
-        % \end{equation*}
-        最终得到的速度函数可以写成如下形式：
+        通过如上结果，我们进一步得到$n=1$处点的信号直流分量$\frac{A_1}{N}$，以及$2\leq n\leq \frac{N}{2}$时，$n\mathrm{Hz}$信号的幅度$\frac{2A_n}{N}$，且其相位为$\mathrm{atan2}(b_n,a_n)$。
+
+        故我们得到： 
         \begin{equation*}
             v^*(t)=XXX
+        \end{equation*}
+
+        最终得到的速度函数可以写成如下形式：
+        \begin{equation*}
+            v(t)=XXX
         \end{equation*}
         其图像大致如图4所示：
         \begin{figure}
