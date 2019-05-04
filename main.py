@@ -24,18 +24,18 @@ vInter = [F(t) for t in tInter]
 
 
 # 第一幅图
-N = 1000
+N = 1000 # 绘制时的步长
 threshold = 0.0
 tPoint = np.linspace(0, 15, N)
 plt.subplot(231)
 plt.title('Result of Driver%d' % (driver))
-plt.plot(np.linspace(0, 15, 15), np.ones(15)*100, 'y--')
-plt.plot(time, vlist, 'r.')
+plt.plot(np.linspace(0, 15, 15), np.ones(15)*100, 'y--') #超速的那条线
+plt.plot(time, vlist, 'r.') #原始数据
 obj = FFT(vInter, 0, 15, threshold) # obj为一对象，里面包含了模和辐角成员，该对象的getfun()方法反回得到的连续函数
-f = obj.getfun()
+f = obj.getfun() #用obj的getfun()方法得到fft后的连续函数
 chaosu = [1 if f(t)>100 else 0 for t in tPoint]
-print('超速小时:%.3fh' % (sum(chaosu)/N*15))
-draw(f, 0, 15, N).show()
+print('超速小时:%.3fh' % (sum(chaosu)/N*15)) # 计算超速时间
+draw(f, 0, 15, N).show() # draw为一封装好的对象，可以直接用show()方法来绘制f在[0, 15]上的图像
 
 # 第二幅图，积分的比较
 plt.subplot(232)
