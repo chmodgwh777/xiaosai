@@ -52,11 +52,11 @@
         \end{center}
     \section{模型的原理}
         \subsection{离散傅里叶变换(Discrete Fourier Transform, DFT)}
-        在被采样信号和周期信号测量处理中，离散傅里叶变换得到广泛的应用$^{\cite{bib:three}}$。离散傅里叶变换是傅里叶变换的离散形式，即在时域和频域上都呈离散的取值。在形式上，时域和频域上变换两端的序列是有限长的，而实际上这两组序列都被认为是离散的经周期延拓后的信号的主值序列。DFT的公式为：
-        \begin{equation*}
-            1+1=2
-        \end{equation*}
-        其中，XXXXXX
+        在被采样信号和周期信号测量处理中，离散傅里叶变换得到广泛的应用$^{\cite{bib:three}}$。离散傅里叶变换是傅里叶变换的离散形式，即在时域和频域上都呈离散的取值。在形式上，时域和频域上变换两端的序列是有限长的，而实际上这两组序列都被认为是离散的经周期延拓后的信号的主值序列。设已有数据列为$x(0),x(1),\dots,x(N-1)$，则DFT的公式为：
+        \begin{equation}
+            \label{eq:DFT}
+            X(j) = \sum_{n=0}^{N-1}x(n)e^{-2\pi i\frac{nj}{N}}
+        \end{equation}
         
         在本文中，采用快速傅里叶变换(Fast Fourier Transform, FFT)算法进行计算。该算法利用了DFT中的奇偶性与虚实性极大地简化了计算，将DFT中$\mathcal{O}(N^2)$的计算量减小至FFT的$\mathcal{O}(NLog2N)$，使得计算机得运算时间大大缩短。
 
