@@ -11,7 +11,7 @@ if platform.system() == 'Darwin':
     dataPath = '/Users/gao/Desktop/xiaosai/data'
 else:
     dataPath = r'F:\大学工作\2018-2019 Sophomore year\190429第二次校赛建模\data.txt'
-driver = 1 # 司机1
+driver = 3 # 司机1
 data = np.loadtxt(dataPath) # 读取数据
 time = data[..., 0] - 0.25
 data1 = data[..., driver]
@@ -25,24 +25,41 @@ vInter = [F(t) for t in tInter]
 
 # 第一幅图
 N = 1000
+threshold = 0.0
 tPoint = np.linspace(0, 15, N)
-plt.subplot(221)
+plt.subplot(231)
 plt.title('Result of Driver%d' % (driver))
-plt.plot(range(0, 16), [100 for i in range(0, 16)])
+plt.plot(np.linspace(0, 15, 15), np.ones(15)*100, 'y--')
 plt.plot(time, vlist, 'r.')
-f = getFFTfun(vInter, 0, 15, 0.0)
+obj = FFT(vInter, 0, 15, threshold) # obj为一对象，里面包含了模和辐角成员，该对象的getfun()方法反回得到的连续函数
+f = obj.getfun()
 chaosu = [1 if f(t)>100 else 0 for t in tPoint]
-print(sum(chaosu)/N*15)
+print('超速小时:%.3fh' % (sum(chaosu)/N*15))
 draw(f, 0, 15, N).show()
 
-# 第二幅图
-plt.subplot(222)
+# 第二幅图，积分的比较
+plt.subplot(232)
 plt.title('Compare')
 I = [quad(f, v-0.5, v)[0] for v in data[..., 0]]
 plt.plot(data[..., 0], data1, 'r.')
 plt.plot(data[..., 0], I, 'g.')
 
-plt.subplot(223)
+# 第三幅图，误差
+plt.subplot(233)
 plt.title('Error')
 plt.plot(data[..., 0], I-data1, 'b.')
+
+# 第四幅图，插值结果
+plt.subplot(234)
+plt.title('result of interpolate')
+plt.plot(tInter, vInter, 'b.')
+plt.plot(time, vlist, 'r.')
+plt.plot(tInter, vInter, 'm:')
+
+# 第五幅图，模
+plt.subplot(235)
+plt.title('mod')
+plt.plot(tInter[:-1], obj.rawMod, 'b.')
+
+
 plt.show()

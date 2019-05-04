@@ -19,19 +19,26 @@ class draw:
         self.color = c
         plt.plot(self.pointList, self.valueList, self.color)
 
-def getFFTfun(xlist, tmin, tmax, threshold = 0):
-    N = len(xlist)-1
-    xfft = fft(xlist, N)
-    xMod = abs(xfft)
-    xMod /= (N/2)
-    xMod[0] /= 2
-    xarg = [math.atan2(x.imag, x.real) for x in xfft][0:int(N/2)]
-    def returnFun(t):
-        tStd = (t-tmin)/(tmax-tmin)
-        xmean = xMod[0]
-        for i in range(1, len(xarg)):
-            if xMod[i] <= threshold:
-                continue
-            xmean += xMod[i]*math.cos(2*i*math.pi*tStd+xarg[i])
-        return xmean
-    return returnFun
+class FFT:
+    def __init__(self, xlist, tmin, tmax, threshold = 0):
+        self.xlist = xlist
+        self.tmin = tmin
+        self.tmax = tmax
+        self.threshold = threshold
+        self.N = len(self.xlist)-1
+        self.xfft = fft(self.xlist, self.N)
+        self.xMod = abs(self.xfft)
+        self.rawMod = list(self.xMod)
+        self.xMod /= (self.N/2)
+        self.xMod[0] /= 2
+        self.xarg = [math.atan2(x.imag, x.real) for x in self.xfft][0:int(self.N/2)]
+    def getfun(self):
+        def returnFun(t):
+            tStd = (t-self.tmin)/(self.tmax-self.tmin)
+            xmean = self.xMod[0]
+            for i in range(1, len(self.xarg)):
+                if self.xMod[i] <= self.threshold:
+                    continue
+                xmean += self.xMod[i]*math.cos(2*i*math.pi*tStd+self.xarg[i])
+            return xmean
+        return returnFun
