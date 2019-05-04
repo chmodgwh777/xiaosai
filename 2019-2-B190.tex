@@ -65,21 +65,54 @@
         \begin{enumerate}
             \item 数据标准化；
             
-            假设给定了k个指标$X_1,X_2,\dots,X_k$，其中$X_i = {x_1,x_2,\dots,x_n}$。假设对各指标数据标准化后的值为$Y_1,Y_2,\dots,Y_k$，那么$Y_{ij} = \frac{X_{ij}-\min(X_i)}{\max(X_i)-\min(X_i)}$
+            假设给定了k个指标$X_1,X_2,\dots,X_k$，其中$X_i = {x_1,x_2,\dots,x_n}$。假设对各指标数据标准化后的值为$Y_1,Y_2,\dots,Y_k$，那么
+            \begin{equation}
+                \label{eq:EWM1}
+                Y_{ij} = \frac{X_{ij}-\min(X_i)}{\max(X_i)-\min(X_i)}
+            \end{equation}
+
             \item 求个指标得信息熵；
             
-            根据信息论中信息熵的定义，一组数据的信息熵$E_j = -\log(n)^{-1}\sum_{i=1}^{n}p_{ij}\log p_{ij}$。其中$p_{ij} = \frac{Y_{ij}}{\sum_{i=1}^{n}Y_{ij}}$
+            根据信息论中信息熵的定义，一组数据的信息熵为
+            \begin{equation}
+                \label{eq:EWM2}
+                E_j = -\log(n)^{-1}\sum_{i=1}^{n}p_{ij}\log p_{ij}
+            \end{equation}
+            其中$p_{ij} = \frac{Y_{ij}}{\sum_{i=1}^{n}Y_{ij}}$.
             \item 确定各指标的权重。
             
-            根据信息熵的计算公式，计算出各个指标的信息熵为$E_1,E_2,\dots,E_k$。通过信息熵计算各指标的权重：$W_i = \frac{1-E_i}{k-\sum E_i}\quad (i = 1,2,\dots,k)$
+            根据信息熵的计算公式，计算出各个指标的信息熵为$E_1,E_2,\dots,E_k$。通过信息熵计算各指标的权重：
+            \begin{equation}
+                \label{eq:EWM3}
+                W_i = \frac{1-E_i}{k-\sum E_i}\quad (i = 1,2,\dots,k)
+            \end{equation}
         \end{enumerate}
         
         \subsection{层次分析法(Analytic Hierarchy Process, AHP)}
         层次分析法是确定指标主观权重最常用的方法，其主要思想是以评价目标为出发点，对各评价指标进行分解，构造出指标之间的层级关系，再结合判断矩阵计算权重系数$^{\cite{bib:five}}$。其基本步骤如下：
         \begin{enumerate}
-            \item 构造判断矩阵；(式子)
-            \item 确定各指标权重；(式子)
-            \item 一致性检验。(式子)
+            \item 构造判断矩阵；
+            
+            假设要比较某一层$n$个因素$C_1,C_2,\dots,C_n$对上层一个因素$O$的影响，每次取两个因素$C_i$和$C_j$，用$a_{ij}$表示$C_i$和$C_j$对$O$的影响之比，全部比较结果可用成对比较矩阵表示：
+            \begin{equation}
+                \label{eq:AHP1}
+                A = (a_ij)_{n\times n},\quad a_{ij}>0,\quad a_{ji} = \frac{1}{a_{ij}}
+            \end{equation}
+            \item 确定各指标权重；
+            
+            对于成对比较矩阵$A$，找出其最大特征值$\lambda$对应的特征向量归一化后作为权向量$w$，即$w$满足：
+            \begin{equation}
+                \label{eq:AHP2}
+                Aw=\lambda w,\quad \|w\|_2 = 1
+            \end{equation}
+            \item 一致性检验。
+        
+            最后，根据成对比较矩阵$A$的一些数字特征进行一致性检验。检验方法如下：
+            \begin{equation}
+                \label{eq:AHP3}
+                CR = \frac{CI}{RI}
+            \end{equation}
+            其中$CI$称为一致性指标，定义式为$CI=\frac{\lambda-n}{n-1}$，而$RI$是随机一致性指标，与$A$的阶数$n$有关。当$CR<0.1$时，则称通过了一致性检验，此时$w$可作为权向量。
         \end{enumerate}
 
         \subsection{模糊综合评价法}
@@ -183,14 +216,11 @@
         接下来，对数据进行标准化处理。考虑到大巴车的平均速度应尽可能地快，而变异系数以及超速时间应越小越好，故对两种情况分别采用两种标准化的方法，使得标准化系数均在$[0,1]$之间，且越接近$1$代表司机的该项指标越为优秀。
 
             \subsubsection{基于EWM的客观权重确定}
-            通过EWM确定三项指标分别所占的客观权重。在标准化的基础上，我们利用以下公式求出各指标的信息熵为$0.613$、$0.233$以及$0.608$；且各指标的权重为$0.250$、$0.496$和$0.253$。
+            通过EWM确定三项指标分别所占的客观权重。在标准化的基础上，我们利用以下公式(\ref{eq:EWM2})(\ref{eq:EWM3})求出各指标的信息熵为$0.613$、$0.233$以及$0.608$；且各指标的权重为$0.250$、$0.496$和$0.253$。
 
-            \begin{equation*}
-                1+1=2
-            \end{equation*}
 
             \subsubsection{基于AHP的主观权重确定}
-            考虑到大巴车在高速上长期行驶，故安全性应明显重要于其他两因素。此外，高速上以平稳的速度行驶也比行驶的速度更快重要，因此利用$1$-$9$尺度，构造如下成对比较矩阵：
+            考虑到大巴车在高速上长期行驶，故安全性应明显重要于其他两因素。此外，高速上以平稳的速度行驶也比行驶的速度更快重要，因此利用$1$-$9$尺度，根据(\ref{eq:AHP1})(\ref{eq:AHP2})(\ref{eq:AHP3})，构造如下成对比较矩阵：
             \[
             \begin{pmatrix}
                 1 & \frac{1}{3} & \frac{1}{9}  \\
