@@ -57,14 +57,21 @@
             1+1=2
         \end{equation*}
         其中，XXXXXX
+        
         在本文中，采用快速傅里叶变换(Fast Fourier Transform, FFT)算法进行计算。该算法利用了DFT中的奇偶性与虚实性极大地简化了计算，将DFT中$\mathcal{O}(N^2)$的计算量减小至FFT的$\mathcal{O}(NLog2N)$，使得计算机得运算时间大大缩短。
 
         \subsection{熵权法(Entropy Weight Method, EWM)}
         熵权法是一种根据各项指标观测值所提供的信息量的大小来确定指标权重的方法$^{\cite{bib:four}}$。若某个指标的信息熵越小，表明指标值得变异程度越大，提供的信息量越多，在综合评价中所能起到的作用也越大，其权重也就越大。因此，可利用信息熵这个工具，计算出各个指标的权重，熵权法也由此而来。其计算步骤如下：
         \begin{enumerate}
-            \item 数据标准化；(式子)
-            \item 求个指标得信息熵；(式子)
-            \item 确定各指标的权重。(式子)
+            \item 数据标准化；
+            
+            假设给定了k个指标$X_1,X_2,\dots,X_k$，其中$X_i = {x_1,x_2,\dots,x_n}$。假设对各指标数据标准化后的值为$Y_1,Y_2,\dots,Y_k$，那么$Y_{ij} = \frac{X_{ij}-\min(X_i)}{\max(X_i)-\min(X_i)}$
+            \item 求个指标得信息熵；
+            
+            根据信息论中信息熵的定义，一组数据的信息熵$E_j = -\log(n)^{-1}\sum_{i=1}^{n}p_{ij}\log p_{ij}$。其中$p_{ij} = \frac{Y_{ij}}{\sum_{i=1}^{n}Y_{ij}}$
+            \item 确定各指标的权重。
+            
+            根据信息熵的计算公式，计算出各个指标的信息熵为$E_1,E_2,\dots,E_k$。通过信息熵计算各指标的权重：$W_i = \frac{1-E_i}{k-\sum E_i}\quad (i = 1,2,\dots,k)$
         \end{enumerate}
         
         \subsection{层次分析法(Analytic Hierarchy Process, AHP)}
