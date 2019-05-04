@@ -48,6 +48,7 @@ plt.plot(data[..., 0], I, 'g.')
 plt.subplot(233)
 plt.title('Error')
 plt.plot(data[..., 0], I-data1, 'b.')
+print('Error:', np.sqrt(sum((I-data1)*(I-data1))/30))
 
 # 第四幅图，插值结果
 plt.subplot(234)
