@@ -6,19 +6,23 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{fontspec}
+\newfontfamily\menlo{Menlo}
 \lstset{
     columns=fixed,       
     numbers=left,                                        % 在左侧显示行号
     frame=none,                                          % 不显示背景边框
-    basicstyle=\small,
+    basicstyle=\small\menlo,
     backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
     keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
-    numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+    numberstyle=\small\color{darkgray},           % 设定行号格式
     commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
-    stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+    stringstyle=\menlo\slshape\color[RGB]{128,0,0},   % 设置字符串格式
     showstringspaces=false,                              % 不显示字符串中的空格
     language=matlab,                                        % 设置语言
 }
+
+\setCJKmainfont[BoldFont=SimHei,ItalicFont=KaiTi]{SimSun}
 
 \title{大巴车的速度估计问题}
 
@@ -405,7 +409,8 @@ plot(vtime, vInter, 'b.');
 title(s(1), sprintf('result of driver%d', ddriver), 'FontSize', 15);
 title(s(2), 'compare the integrate value', 'FontSize', 15);
 title(s(3), 'Error of the integrate', 'FontSize', 15);
-title(s(4), sprintf('result of interpolate, method:%s', interMethod), 'FontSize', 15);
+title(s(4), sprintf('result of interpolate, method:%s', interMethod), ... 
+'FontSize', 15);
 
 
 %%% getFFTfun.m
