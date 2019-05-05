@@ -48,6 +48,7 @@ plt.title('Driver%d' % (driver))
 I = [quad(f, v-0.5, v)[0] for v in data[..., 0]]
 plt.plot(data[..., 0], data1, 'r.', label='origin')
 plt.plot(data[..., 0], I, 'g.', label='predict')
+print(np.sqrt(sum((I-data1)*(I-data1))/30))
 plt.legend()
 
 # 第三幅图  没有超速的那条线
@@ -80,5 +81,15 @@ plt.title('Driver%d' % (driver))
 plt.plot(tInter[:-1], obj.rawMod, 'b.')
 
 plt.tight_layout()
-plt.savefig(r'3.png')
-plt.show()
+# plt.savefig(r'3.png')
+# plt.show()
+# print(obj.xMod[:30], len(obj.xMod[:30]))
+# for m in obj.xMod[:30]:
+#     print('%.4f' % m)
+# print('----------------------------------')
+# for a in obj.xarg:
+    # print('%.4f' % a)
+
+ #for i in range(30):
+    # print(r'%d & %.4f & %.4f \\' % (i+1, obj.xMod[i], obj.xarg[i]))
+ #   print(r'%2d %11.4f %11.4f' % (i+1, obj.xMod[i], obj.xarg[i]))
